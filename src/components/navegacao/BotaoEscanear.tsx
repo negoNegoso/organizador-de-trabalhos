@@ -5,17 +5,18 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { acaoDoBotao } from '@/lib/ui/navegacao';
 import { MenuEscanear } from './MenuEscanear';
+import { MenuLoteTurma } from './MenuLoteTurma';
 
 export function BotaoEscanear() {
   const pathname = usePathname();
   const router = useRouter();
-  const [menu, setMenu] = useState(false);
+  const [menu, setMenu] = useState<null | { tipo: 'geral' } | { tipo: 'turma'; turmaId: string }>(null);
 
   function tocar() {
     const acao = acaoDoBotao(pathname);
     if (acao.tipo === 'ir') router.push(acao.href);
-    else if (acao.tipo === 'lote-turma') router.push('/lote');
-    else setMenu(true);
+    else if (acao.tipo === 'lote-turma') setMenu({ tipo: 'turma', turmaId: acao.turmaId });
+    else setMenu({ tipo: 'geral' });
   }
 
   return (
@@ -28,7 +29,8 @@ export function BotaoEscanear() {
       >
         <Camera aria-hidden className="h-6 w-6" />
       </button>
-      {menu && <MenuEscanear onFechar={() => setMenu(false)} />}
+      {menu?.tipo === 'geral' && <MenuEscanear onFechar={() => setMenu(null)} />}
+      {menu?.tipo === 'turma' && <MenuLoteTurma turmaId={menu.turmaId} onFechar={() => setMenu(null)} />}
     </>
   );
 }
