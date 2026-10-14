@@ -18,20 +18,20 @@ export function SeletorAluno({ alunos, entregues, ocupado, onEscolher }: Props) 
       <h2 className="font-semibold">De quem é este trabalho?</h2>
       <label className="block text-sm">
         Filtrar
-        <input type="search" value={filtro} onChange={(e) => setFiltro(e.target.value)} className="mt-1 w-full rounded border px-3 py-2" />
+        <input type="search" value={filtro} onChange={(e) => setFiltro(e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2" />
       </label>
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" checked={todos} onChange={(e) => setTodos(e.target.checked)} /> Mostrar quem já entregou
       </label>
       {visiveis.length === 0 && (
-        <p className="text-sm text-gray-600">{todos || filtro ? 'Nenhum aluno encontrado.' : 'Todos já entregaram.'}</p>
+        <p className="text-sm text-slate-600">{todos || filtro ? 'Nenhum aluno encontrado.' : 'Todos já entregaram.'}</p>
       )}
       <ul className="space-y-2">
         {visiveis.map((a) => (
           <li key={a.id}>
-            <button disabled={ocupado} onClick={() => onEscolher(a)} className="w-full rounded border p-3 text-left disabled:opacity-50">
+            <button disabled={ocupado} onClick={() => onEscolher(a)} className="w-full rounded-xl border p-3 text-left disabled:opacity-50">
               {a.nome}
-              {entregues.has(a.id) && <span className="ml-2 text-xs text-gray-500">(já entregou)</span>}
+              {entregues.has(a.id) && <span className="ml-2 text-xs text-slate-500">(já entregou)</span>}
             </button>
           </li>
         ))}

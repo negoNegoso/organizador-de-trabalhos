@@ -68,7 +68,7 @@ export function Revisao({ paginas, filtro, onFiltro, onAlterar, onMaisPaginas, o
   };
 
   return (
-    <div className="flex h-full flex-col bg-gray-900">
+    <div className="flex h-full flex-col bg-slate-900">
       <fieldset className="flex gap-4 p-3 text-sm">
         <legend className="sr-only">Filtro</legend>
         {(['documento', 'cor'] as const).map((f) => (
@@ -80,14 +80,14 @@ export function Revisao({ paginas, filtro, onFiltro, onAlterar, onMaisPaginas, o
       </fieldset>
       <ol className="grid min-h-0 flex-1 grid-cols-2 content-start gap-3 overflow-y-auto p-3">
         {paginas.map((p, i) => (
-          <li key={p.id} className="space-y-1 rounded bg-gray-800 p-2">
+          <li key={p.id} className="space-y-1 rounded bg-slate-800 p-2">
             {previas[p.id] === ERRO ? (
               <p className="text-xs text-red-300">Cantos inválidos — ajuste</p>
             ) : previas[p.id] ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={previas[p.id]} alt={`Página ${i + 1}`} className="w-full rounded bg-white" />
             ) : (
-              <div className="aspect-[3/4] animate-pulse rounded bg-gray-700" />
+              <div className="aspect-[3/4] animate-pulse rounded bg-slate-700" />
             )}
             {!p.detectado && <p className="text-xs text-amber-300">Cantos não detectados — confira</p>}
             <div className="flex flex-wrap gap-2 text-xs">
@@ -101,7 +101,7 @@ export function Revisao({ paginas, filtro, onFiltro, onAlterar, onMaisPaginas, o
         ))}
       </ol>
       <div className="flex gap-2 p-3">
-        <button onClick={onMaisPaginas} className="flex-1 rounded border py-3">Adicionar página</button>
+        <button onClick={onMaisPaginas} className="flex-1 rounded-xl border py-3">Adicionar página</button>
         <button onClick={onContinuar} disabled={!paginas.length} className="flex-1 rounded bg-blue-600 py-3 disabled:opacity-50">
           Continuar ({paginas.length})
         </button>

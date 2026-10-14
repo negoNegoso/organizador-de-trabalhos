@@ -49,8 +49,7 @@ export function EnviarArquivos({ aluno, atividades, arquivosIniciais = [], volta
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Enviar arquivo para {aluno.nome}</h1>
-      <label className="block text-sm">
+      <label className="block rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm">
         Arquivos (1 PDF ou várias imagens)
         <input
           type="file"
@@ -64,7 +63,7 @@ export function EnviarArquivos({ aluno, atividades, arquivosIniciais = [], volta
         />
       </label>
       {arquivos.length > 0 && (
-        <ul className="text-sm text-gray-700">{arquivos.map((f, i) => <li key={i}>{f.name}</li>)}</ul>
+        <ul className="text-sm text-slate-700">{arquivos.map((f, i) => <li key={i}>{f.name}</li>)}</ul>
       )}
       {erro && <p role="alert" className="text-sm text-red-600">{erro}</p>}
       <EscolherDestino atividades={atividades} textoBotao="Enviar" ocupado={ocupado} onConfirmar={enviar} />

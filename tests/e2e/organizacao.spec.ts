@@ -73,3 +73,14 @@ test('mudar a cor da turma pelo ⋯ muda o cartão no Início', async ({ page })
   await abas(page).getByRole('link', { name: 'Início' }).click();
   await expect(page.getByRole('link', { name: /3º C/ })).toHaveAttribute('data-cor', 'laranja');
 });
+
+test('arquivar o ano pelo ⋯', async ({ page }) => {
+  await entrar(page);
+  await abas(page).getByRole('link', { name: 'Mais' }).click();
+  await page.getByLabel('Ano', { exact: true }).fill('2026');
+  await page.getByRole('button', { name: 'Criar ano' }).click();
+  await page.getByRole('link', { name: '2026' }).click();
+  await page.getByRole('button', { name: 'Ações do ano' }).click();
+  await page.getByRole('dialog', { name: '2026' }).getByRole('button', { name: 'Arquivar ano' }).click();
+  await expect(page.getByText('Ano arquivado')).toBeVisible();
+});
