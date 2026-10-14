@@ -22,6 +22,9 @@ test('PDF vai para a atividade escolhida', async ({ page }) => {
   await expect(page).toHaveURL(`/alunos/${s.alunos.maria}`);
   await expect(page.getByTestId('arquivo')).toContainText('2 página(s)', { timeout: 20_000 });
   await expect(page.getByRole('heading', { name: 'Prova 1' })).toBeVisible();
+  const miniatura = page.getByTestId('arquivo').locator('img');
+  await expect(miniatura).toBeVisible();
+  await expect.poll(() => miniatura.evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
 });
 
 test('várias imagens viram um PDF com título livre', async ({ page }) => {
