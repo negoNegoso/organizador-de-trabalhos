@@ -46,3 +46,6 @@ supabase/.temp
 test-results/
 playwright-report/
 tests/e2e/fixtures/folha.y4m
+
+# brainstorm / sdd scratch
+.superpowers/
