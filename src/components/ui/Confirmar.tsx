@@ -7,12 +7,13 @@ type Props = {
   mensagem: string;
   textoConfirmar: string;
   ocupado?: boolean;
+  podeConfirmar?: boolean;
   erro?: string | null;
   onConfirmar: () => void;
   onCancelar: () => void;
 };
 
-export function Confirmar({ titulo, mensagem, textoConfirmar, ocupado, erro, onConfirmar, onCancelar }: Props) {
+export function Confirmar({ titulo, mensagem, textoConfirmar, ocupado, podeConfirmar = true, erro, onConfirmar, onCancelar }: Props) {
   return (
     <MenuInferior aberto titulo={titulo} onFechar={() => !ocupado && onCancelar()}>
       <p className="text-sm text-slate-600">{mensagem}</p>
@@ -24,7 +25,7 @@ export function Confirmar({ titulo, mensagem, textoConfirmar, ocupado, erro, onC
         <button
           type="button"
           onClick={onConfirmar}
-          disabled={ocupado}
+          disabled={ocupado || !podeConfirmar}
           className="h-12 rounded-xl bg-red-600 font-medium text-white disabled:opacity-50"
         >
           {textoConfirmar}

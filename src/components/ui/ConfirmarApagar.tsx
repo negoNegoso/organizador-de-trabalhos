@@ -57,7 +57,8 @@ export function ConfirmarApagar({ escopo, descricao, depois, onFechar }: Props) 
       titulo={`Apagar ${descricao}?`}
       mensagem={mensagem}
       textoConfirmar="Apagar"
-      ocupado={ocupado || (!ehArquivo && quantidade === null)}
+      ocupado={ocupado}
+      podeConfirmar={ehArquivo || quantidade !== null}
       erro={erro}
       onConfirmar={confirmar}
       onCancelar={onFechar}
