@@ -13,7 +13,7 @@ npm run usuario -- voce@email.com SuaSenha
 npm run dev                            # http://localhost:3000
 ```
 
-- Se `npx` falhar no seu ambiente, use `npm exec -- supabase ...` no lugar de `npx supabase ...` (os scripts do projeto já funcionam assim).
+- Se `npx` falhar no seu ambiente, use `npm exec -- supabase ...` no lugar de `npx supabase ...` (os scripts do projeto já usam o binário local do Supabase).
 - O Supabase local deste projeto usa portas deslocadas em +100 para evitar conflito com outro projeto local: a API fica em `http://127.0.0.1:54421` e o banco na porta `54422`.
 
 ## Testes

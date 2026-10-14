@@ -151,6 +151,7 @@ describe('cadastro', () => {
       email: `${crypto.randomUUID()}@teste.local`,
       password: 'qualquer-123456',
     });
-    expect(error).not.toBeNull();
+    expect(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY).toBeTruthy();
+    expect(error?.code).toBe('signup_disabled');
   });
 });

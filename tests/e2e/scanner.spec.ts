@@ -13,7 +13,7 @@ test('lote: detecta a folha, salva para a aluna e a tira da lista', async ({ pag
   await page.goto('/lote');
   await page.getByLabel('Ano letivo').selectOption({ label: '2026' });
   await page.getByLabel('Turma').selectOption({ label: '3º A' });
-  await page.getByLabel('Atividade').selectOption({ label: 'Prova 1' });
+  await page.getByRole('combobox', { name: 'Atividade' }).selectOption({ label: 'Prova 1' });
   await page.getByRole('button', { name: 'Começar' }).click();
 
   await expect(page.locator('canvas[data-detectado="sim"]')).toBeAttached({ timeout: 30_000 });
@@ -45,7 +45,7 @@ test('avulso: escaneia, ajusta cantos e salva na pasta', async ({ page }) => {
   await page.getByRole('button', { name: 'Aplicar' }).click();
   await page.getByRole('button', { name: 'Girar' }).click();
   await page.getByRole('button', { name: 'Continuar (1)' }).click();
-  await page.getByLabel('Atividade').selectOption({ label: 'Prova 1' });
+  await page.getByRole('combobox', { name: 'Atividade' }).selectOption({ label: 'Prova 1' });
   await page.getByRole('button', { name: 'Salvar' }).click();
   await expect(page).toHaveURL(`/alunos/${s.alunos.joao}`);
   await expect(page.getByTestId('arquivo')).toContainText('1 página(s)', { timeout: 20_000 });

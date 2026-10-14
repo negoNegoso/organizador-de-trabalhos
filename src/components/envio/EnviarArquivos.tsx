@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { classificarArquivos } from '@/lib/envio/classificar';
 import { ErroEnvio } from '@/lib/envio/erro';
 import { itemDeImagens, itemDePdf } from '@/lib/envio/montar';
+import { LIMITE_PDF } from '@/lib/pdf/validar';
 import { enfileirar } from '@/lib/fila/useFila';
 import { blobParaImagem } from '@/lib/imagem/navegador';
 import type { Atividade } from '@/lib/tipos';
@@ -30,6 +31,7 @@ export function EnviarArquivos({ aluno, atividades, arquivosIniciais = [], volta
     try {
       const c = classificarArquivos(arquivos);
       const destino = { alunoId: aluno.id, ...d };
+      if (c.tipo === 'pdf' && c.arquivo.size > LIMITE_PDF) throw new ErroEnvio('PDF maior que 20 MB.');
       const item =
         c.tipo === 'pdf'
           ? await itemDePdf(new Uint8Array(await c.arquivo.arrayBuffer()), destino)

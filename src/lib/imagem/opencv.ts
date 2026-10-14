@@ -11,28 +11,39 @@ let carregando: Promise<{ cv: OpenCV } | null> | null = null;
  * OpenCV tem `.then` e confundiria o Promise) ou null se falhar/demorar.
  */
 export function carregarOpenCV(src = '/opencv/opencv.js', timeoutMs = 20_000): Promise<{ cv: OpenCV } | null> {
-  carregando ??= new Promise((resolve) => {
+  carregando ??= new Promise<{ cv: OpenCV } | null>((resolve) => {
     const w = window as unknown as { cv?: OpenCV };
-    const pronto = (m: OpenCV) => resolve(m?.Mat ? { cv: m } : null);
     const timer = setTimeout(() => resolve(null), timeoutMs);
-    const aoCarregar = () => {
+    const pronto = (m: OpenCV) => {
       clearTimeout(timer);
-      const g = w.cv;
-      if (!g) return resolve(null);
-      if (g.Mat) return pronto(g);
-      if (g instanceof Promise) return void g.then(pronto, () => resolve(null));
-      g.onRuntimeInitialized = () => pronto(w.cv);
+      resolve(m?.Mat ? { cv: m } : null);
     };
-    if (w.cv) return aoCarregar();
-    const script = document.createElement('script');
-    script.src = src;
-    script.async = true;
-    script.onload = aoCarregar;
-    script.onerror = () => {
+    const falhou = () => {
       clearTimeout(timer);
       resolve(null);
     };
-    document.head.appendChild(script);
+    const aoCarregar = () => {
+      const g = w.cv;
+      if (!g) return falhou();
+      if (g.Mat) return pronto(g);
+      if (g instanceof Promise) return void g.then(pronto, falhou);
+      g.onRuntimeInitialized = () => pronto(w.cv);
+    };
+    if (w.cv) return aoCarregar();
+    // Uma tentativa anterior pode ter deixado a tag: reaproveita em vez de inserir outra.
+    const existente = document.querySelector<HTMLScriptElement>(`script[data-opencv="${src}"]`);
+    const script = existente ?? document.createElement('script');
+    script.addEventListener('load', aoCarregar);
+    script.addEventListener('error', falhou);
+    if (!existente) {
+      script.src = src;
+      script.async = true;
+      script.dataset.opencv = src;
+      document.head.appendChild(script);
+    }
+  }).then((r) => {
+    if (!r) carregando = null; // falhou ou estourou o tempo: a próxima montagem tenta de novo
+    return r;
   });
   return carregando;
 }

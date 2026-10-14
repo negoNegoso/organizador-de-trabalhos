@@ -46,4 +46,3 @@ supabase/.temp
 test-results/
 playwright-report/
 tests/e2e/fixtures/folha.y4m
-tests/e2e/fixtures/folha.y4m

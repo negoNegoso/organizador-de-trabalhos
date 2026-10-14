@@ -96,7 +96,7 @@ export function EscolherLote({ anos }: { anos: AnoLetivo[] }) {
             onMudar={setAtividadeId}
           />
           <FormNome
-            rotulo="Ou crie um novo (nome)"
+            rotulo="Ou crie uma nova atividade"
             textoBotao="Criar"
             onSalvar={async (nome) => {
               const nova = await criarAtividade(sb, turmaId, nome, hojeIso());

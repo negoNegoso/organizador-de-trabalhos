@@ -28,18 +28,31 @@ export function criarEnviar(sb: SupabaseClient): Enviar {
       if (r.error) return limparEFalhar(r.error.message);
     }
 
-    const { error } = await sb.from('arquivos').insert({
-      id: item.id,
-      aluno_id: item.alunoId,
-      atividade_id: item.atividadeId,
-      titulo: item.titulo,
-      storage_path: caminho,
-      paginas: item.paginas,
-      tamanho_bytes: item.pdf.byteLength + (item.miniatura?.byteLength ?? 0),
-      tem_miniatura: !!item.miniatura,
-    });
+    const gravar = (atividadeId: string | null) =>
+      sb.from('arquivos').insert({
+        id: item.id,
+        aluno_id: item.alunoId,
+        atividade_id: atividadeId,
+        titulo: item.titulo,
+        storage_path: caminho,
+        paginas: item.paginas,
+        tamanho_bytes: item.pdf.byteLength + (item.miniatura?.byteLength ?? 0),
+        tem_miniatura: !!item.miniatura,
+      });
+
+    let { error } = await gravar(item.atividadeId);
+    // A atividade foi apagada: o trabalho vai para "Outros".
+    if (error?.code === '23503' && item.atividadeId) ({ error } = await gravar(null));
     if (!error || error.code === '23505') return;
 
-    return limparEFalhar(error.code === '23503' ? 'O aluno ou a atividade foi apagado.' : error.message);
+    // Só rejeição definitiva do banco apaga os objetos; erro de rede é curado pelo retry (upsert).
+    if (error.code === '23503') return limparEFalhar('O aluno foi apagado.');
+    if (rejeicaoDefinitiva(error.code)) return limparEFalhar(error.message);
+    throw new Error(error.message);
   };
+}
+
+/** Erros do Postgres de dados inválidos (22xxx) ou de integridade (23xxx). */
+function rejeicaoDefinitiva(code: string | undefined): boolean {
+  return !!code && /^(22|23)[0-9A-Z]{3}$/.test(code);
 }

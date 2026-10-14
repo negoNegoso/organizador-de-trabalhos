@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { cantosDaImagem, escalarCantos } from '@/lib/imagem/cantos';
 import { Estabilizador } from '@/lib/imagem/estabilizador';
 import { carregarOpenCV, detectarCantos, type OpenCV } from '@/lib/imagem/opencv';
+import { liberarCanvas } from '@/lib/imagem/navegador';
 import type { Cantos, Pagina } from '@/lib/imagem/tipos';
 
 const LARGURA_DETECCAO = 480;
@@ -87,15 +88,16 @@ export function Camera({ onCapturar, onErro }: Props) {
     const v = video.current;
     if (!v?.videoWidth || capturando.current) return;
     capturando.current = true;
+    let canvas: HTMLCanvasElement | null = null;
     try {
       const escala = Math.min(1, MAX_FONTE / Math.max(v.videoWidth, v.videoHeight));
       const w = Math.round(v.videoWidth * escala);
       const h = Math.round(v.videoHeight * escala);
-      const canvas = document.createElement('canvas');
-      canvas.width = w;
-      canvas.height = h;
-      canvas.getContext('2d')!.drawImage(v, 0, 0, w, h);
-      const fonte = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.9));
+      const c = (canvas = document.createElement('canvas'));
+      c.width = w;
+      c.height = h;
+      c.getContext('2d')!.drawImage(v, 0, 0, w, h);
+      const fonte = await new Promise<Blob | null>((r) => c.toBlob(r, 'image/jpeg', 0.9));
       if (!fonte) return;
       const det = ultimos.current;
       onCapturar({
@@ -108,6 +110,7 @@ export function Camera({ onCapturar, onErro }: Props) {
         detectado: !!det,
       });
     } finally {
+      liberarCanvas(canvas);
       capturando.current = false;
     }
   }, [onCapturar]);
@@ -136,7 +139,10 @@ export function Camera({ onCapturar, onErro }: Props) {
         void capturar();
       }
     }, 200);
-    return () => window.clearInterval(id);
+    return () => {
+      window.clearInterval(id);
+      liberarCanvas(det);
+    };
   }, [cv, capturar]);
 
   return (

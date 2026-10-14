@@ -49,3 +49,22 @@ it('se o banco recusa, apaga o objeto enviado e lança erro', async () => {
   const baixado = await sb.storage.from(BUCKET).download(`${fantasma}/${item.id}.pdf`);
   expect(baixado.error).not.toBeNull();
 });
+
+it('atividade apagada antes do envio: o trabalho vai para "Outros" (atividade_id null)', async () => {
+  const s = await semear(sb);
+  const item = novoItem({ alunoId: s.alunos.maria, atividadeId: s.atividadeId, titulo: 'Tarde' }, await pdfDeTeste(), null, 1);
+  const { error } = await sb.from('atividades').delete().eq('id', s.atividadeId);
+  expect(error).toBeNull();
+  await criarEnviar(sb)(item);
+  const [arq] = await listarArquivosDoAluno(sb, s.alunos.maria);
+  expect(arq).toMatchObject({ id: item.id, atividade_id: null });
+});
+
+it('aluno apagado: limpa os objetos e lança "O aluno foi apagado."', async () => {
+  const s = await semear(sb);
+  const item = novoItem({ alunoId: s.alunos.maria, atividadeId: s.atividadeId, titulo: 'X' }, await pdfDeTeste(), null, 1);
+  await sb.from('alunos').delete().eq('id', s.alunos.maria);
+  await expect(criarEnviar(sb)(item)).rejects.toThrow('O aluno foi apagado.');
+  const baixado = await sb.storage.from(BUCKET).download(`${s.alunos.maria}/${item.id}.pdf`);
+  expect(baixado.error).not.toBeNull();
+});
