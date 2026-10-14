@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { NovaTurma } from '@/components/turma/NovaTurma';
 import { Cabecalho } from '@/components/ui/Cabecalho';
 import { ItemLista } from '@/components/ui/ItemLista';
+import { plural } from '@/lib/dominio/formato';
 import { listarAnos } from '@/lib/dados/anos';
 import { listarTurmasPorAno } from '@/lib/dados/turmas';
 import { clienteServidor } from '@/lib/supabase/servidor';
@@ -35,15 +36,19 @@ export default async function PaginaTurmas() {
                 {a.ano}
                 {a.arquivado && <span className="ml-2 text-sm font-normal text-slate-500">arquivado</span>}
               </span>
-              <span className="text-sm font-normal text-slate-500">{doAno.length} turmas</span>
+              <span className="text-sm font-normal text-slate-500">{plural(doAno.length, 'turma', 'turmas')}</span>
             </summary>
-            <ul className="divide-y divide-slate-100 border-t border-slate-100">
-              {doAno.map((t) => (
-                <li key={t.id}>
-                  <ItemLista href={`/turmas/${t.id}`} titulo={t.nome} detalhe={`${t.total_alunos} alunos`} ponto={t.cor} />
-                </li>
-              ))}
-            </ul>
+            {doAno.length ? (
+              <ul className="divide-y divide-slate-100 border-t border-slate-100">
+                {doAno.map((t) => (
+                  <li key={t.id}>
+                    <ItemLista href={`/turmas/${t.id}`} titulo={t.nome} detalhe={plural(t.total_alunos, 'aluno', 'alunos')} ponto={t.cor} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="border-t border-slate-100 px-3 py-3 text-sm text-slate-500">Nenhuma turma ainda.</p>
+            )}
             <Link href={`/anos/${a.id}`} className="block border-t border-slate-100 px-3 py-3 text-sm text-blue-600">Ver ano {a.ano}</Link>
           </details>
         );

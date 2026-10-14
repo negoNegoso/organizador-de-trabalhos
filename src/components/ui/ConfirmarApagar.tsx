@@ -17,17 +17,18 @@ export function ConfirmarApagar({ escopo, descricao, depois, onFechar }: Props) 
   const [ocupado, setOcupado] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
+  const { tipo, id } = escopo;
   useEffect(() => {
     if (ehArquivo) return;
     let vivo = true;
-    contarArquivos(clienteNavegador(), escopo).then(
+    contarArquivos(clienteNavegador(), { tipo, id }).then(
       (n) => vivo && setQuantidade(n),
       (e) => vivo && setErro(mensagemErro(e)),
     );
     return () => {
       vivo = false;
     };
-  }, [escopo, ehArquivo]);
+  }, [tipo, id, ehArquivo]);
 
   async function confirmar() {
     setOcupado(true);

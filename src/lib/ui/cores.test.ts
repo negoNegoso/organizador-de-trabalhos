@@ -1,14 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { CORES, ESTILO_COR, ehCor, sugerirCor } from './cores';
+import { CORES, ESTILO_COR, sugerirCor } from './cores';
 
 describe('paleta', () => {
   it('tem 8 cores na ordem da spec, todas com estilo', () => {
     expect(CORES).toEqual(['azul', 'verde', 'laranja', 'roxo', 'rosa', 'ciano', 'ambar', 'vermelho']);
     for (const c of CORES) expect(ESTILO_COR[c].forte).toMatch(/^bg-/);
-  });
-  it('ehCor reconhece só cores da paleta', () => {
-    expect(ehCor('roxo')).toBe(true);
-    expect(ehCor('preto')).toBe(false);
   });
 });
 

@@ -15,10 +15,6 @@ export const ESTILO_COR: Record<CorTurma, Estilo> = {
   vermelho: { nome: 'Vermelho', forte: 'bg-red-600', suave: 'bg-red-100', texto: 'text-red-800', ponto: 'bg-red-500' },
 };
 
-export function ehCor(v: string): v is CorTurma {
-  return (CORES as readonly string[]).includes(v);
-}
-
 /** Primeira cor menos usada no ano (empate → ordem da paleta). */
 export function sugerirCor(usadas: CorTurma[]): CorTurma {
   const contagem = new Map<CorTurma, number>(CORES.map((c) => [c, 0]));

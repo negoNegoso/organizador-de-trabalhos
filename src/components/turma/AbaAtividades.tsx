@@ -25,6 +25,10 @@ function NovaAtividade({ turmaId, onFechar }: { turmaId: string; onFechar: () =>
   return (
     <MenuInferior aberto titulo="Nova atividade" onFechar={onFechar}>
       <div className="space-y-3">
+        <label className="block text-sm">
+          Data (opcional)
+          <input type="date" value={data} onChange={(e) => setData(e.target.value)} className="mt-1 h-12 w-full rounded-xl border border-slate-200 px-3" />
+        </label>
         <FormNome
           rotulo="Nome da atividade"
           textoBotao="Criar atividade"
@@ -35,10 +39,6 @@ function NovaAtividade({ turmaId, onFechar }: { turmaId: string; onFechar: () =>
             router.refresh();
           }}
         />
-        <label className="block text-sm">
-          Data (opcional)
-          <input type="date" value={data} onChange={(e) => setData(e.target.value)} className="mt-1 h-12 w-full rounded-xl border border-slate-200 px-3" />
-        </label>
       </div>
     </MenuInferior>
   );

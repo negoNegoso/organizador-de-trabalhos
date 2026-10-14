@@ -5,6 +5,7 @@ import { AcoesTurma } from '@/components/turma/AcoesTurma';
 import { Cabecalho } from '@/components/ui/Cabecalho';
 import { listarAlunos } from '@/lib/dados/alunos';
 import { entregasDaTurma, listarAtividades } from '@/lib/dados/atividades';
+import { plural } from '@/lib/dominio/formato';
 import { obterTurma } from '@/lib/dados/turmas';
 import { clienteServidor } from '@/lib/supabase/servidor';
 
@@ -30,7 +31,7 @@ export default async function PaginaTurma({ params, searchParams }: Props) {
         cor={turma.cor}
         voltar={{ href: `/anos/${turma.ano_letivo_id}`, rotulo: String(turma.anos_letivos.ano) }}
         titulo={turma.nome}
-        subtitulo={`${alunos.length} alunos · ${atividades.length} atividades`}
+        subtitulo={`${plural(alunos.length, 'aluno', 'alunos')} · ${plural(atividades.length, 'atividade', 'atividades')}`}
         acoes={<AcoesTurma turma={turma} />}
       >
         <div role="tablist" className="mt-3 flex gap-6 text-sm">

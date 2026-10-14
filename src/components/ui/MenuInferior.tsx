@@ -39,6 +39,7 @@ export function MenuInferior({ aberto, titulo, onFechar, children }: Props) {
     <dialog
       ref={ref}
       aria-label={titulo}
+      onClose={() => aberto && onFechar()}
       onCancel={(e) => {
         e.preventDefault();
         onFechar();

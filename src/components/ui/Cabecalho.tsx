@@ -18,7 +18,7 @@ export function Cabecalho({ voltar, titulo, subtitulo, acoes, cor, children }: P
     <header className={`-mx-4 -mt-4 mb-4 px-4 pt-2 ${children ? '' : 'pb-4'} ${fundo}`}>
       <div className="flex h-11 items-center justify-between gap-2">
         {voltar ? (
-          <Link href={voltar.href} className={`-ml-2 flex min-h-11 min-w-0 items-center gap-1 px-2 text-sm ${cor ? 'text-white/90' : 'text-blue-600'}`}>
+          <Link href={voltar.href} className={`-ml-2 flex min-h-11 min-w-0 items-center gap-1 px-2 text-sm ${cor ? 'text-white' : 'text-blue-600'}`}>
             <ChevronLeft aria-hidden className="h-4 w-4 shrink-0" />
             <span className="truncate">{voltar.rotulo}</span>
           </Link>
@@ -28,7 +28,7 @@ export function Cabecalho({ voltar, titulo, subtitulo, acoes, cor, children }: P
         {acoes}
       </div>
       <h1 className="break-words text-2xl font-bold leading-tight">{titulo}</h1>
-      {subtitulo && <div className={`mt-1 text-sm ${cor ? 'text-white/85' : 'text-slate-500'}`}>{subtitulo}</div>}
+      {subtitulo && <div className={`mt-1 text-sm ${cor ? 'text-white' : 'text-slate-500'}`}>{subtitulo}</div>}
       {children}
     </header>
   );

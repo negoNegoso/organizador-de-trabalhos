@@ -2,6 +2,7 @@ import { AcoesAno } from '@/components/ano/AcoesAno';
 import { NovaTurma } from '@/components/turma/NovaTurma';
 import { Cabecalho } from '@/components/ui/Cabecalho';
 import { CartaoTurma } from '@/components/ui/CartaoTurma';
+import { plural } from '@/lib/dominio/formato';
 import { obterAno } from '@/lib/dados/anos';
 import { listarTurmasComContagem } from '@/lib/dados/turmas';
 import { clienteServidor } from '@/lib/supabase/servidor';
@@ -16,7 +17,7 @@ export default async function PaginaAno({ params }: { params: Promise<{ anoId: s
       <Cabecalho
         voltar={{ href: '/mais', rotulo: 'Mais' }}
         titulo={String(ano.ano)}
-        subtitulo={ano.arquivado ? 'Ano arquivado' : `${turmas.length} turmas`}
+        subtitulo={ano.arquivado ? 'Ano arquivado' : plural(turmas.length, 'turma', 'turmas')}
         acoes={<AcoesAno ano={ano} />}
       />
       <div className="flex justify-end">

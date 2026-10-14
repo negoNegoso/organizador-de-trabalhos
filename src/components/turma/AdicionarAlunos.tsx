@@ -5,11 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { MenuInferior } from '@/components/ui/MenuInferior';
 import { criarAlunos } from '@/lib/dados/alunos';
+import { plural } from '@/lib/dominio/formato';
 import { parseNomes } from '@/lib/dominio/nomes';
 import { mensagemErro } from '@/lib/mensagemErro';
 import { clienteNavegador } from '@/lib/supabase/navegador';
-
-const plural = (n: number, palavra: string) => `${n} ${palavra}${n === 1 ? '' : 's'}`;
 
 export function AdicionarAlunos({ turmaId, existentes }: { turmaId: string; existentes: string[] }) {
   const router = useRouter();
@@ -26,7 +25,7 @@ export function AdicionarAlunos({ turmaId, existentes }: { turmaId: string; exis
     try {
       await criarAlunos(clienteNavegador(), turmaId, novos);
       setTexto('');
-      setResultado(`${plural(novos.length, 'adicionado')}, ${plural(ignorados, 'ignorado')}`);
+      setResultado(`${plural(novos.length, 'adicionado', 'adicionados')}, ${plural(ignorados, 'ignorado', 'ignorados')}`);
       router.refresh();
     } catch (e) {
       setErro(mensagemErro(e));

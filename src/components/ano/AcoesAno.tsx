@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { ConfirmarApagar } from '@/components/ui/ConfirmarApagar';
 import { MenuAcoes } from '@/components/ui/MenuAcoes';
+import { MenuInferior } from '@/components/ui/MenuInferior';
 import { definirArquivado } from '@/lib/dados/anos';
 import { mensagemErro } from '@/lib/mensagemErro';
 import { clienteNavegador } from '@/lib/supabase/navegador';
@@ -37,7 +38,14 @@ export function AcoesAno({ ano }: { ano: AnoLetivo }) {
           { rotulo: 'Apagar ano', icone: Trash2, perigoso: true, aoEscolher: () => setApagando(true) },
         ]}
       />
-      {erro && <p role="alert" className="text-sm text-red-600">{erro}</p>}
+      {erro && (
+        <MenuInferior aberto titulo={`Não foi possível ${ano.arquivado ? 'desarquivar' : 'arquivar'}`} onFechar={() => setErro(null)}>
+          <div className="space-y-3">
+            <p role="alert" className="text-sm text-red-600">{erro}</p>
+            <button type="button" onClick={() => setErro(null)} className="h-12 w-full rounded-xl bg-blue-600 font-medium text-white">Fechar</button>
+          </div>
+        </MenuInferior>
+      )}
       {apagando && (
         <ConfirmarApagar escopo={{ tipo: 'ano', id: ano.id }} descricao={`o ano ${ano.ano}`} depois="/mais" onFechar={() => setApagando(false)} />
       )}

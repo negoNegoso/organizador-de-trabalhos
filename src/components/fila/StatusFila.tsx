@@ -33,7 +33,7 @@ export function StatusFila() {
           <button type="button" onClick={() => void processar()} className="min-h-11 text-blue-600">Tentar de novo</button>
         </div>
         {aberta && (
-          <ul className="space-y-1 pb-2">
+          <ul className="max-h-[40dvh] space-y-1 overflow-y-auto pb-2">
             {itens.map((i) => (
               <li key={i.id} className="flex items-center justify-between gap-2">
                 <span className="min-w-0 truncate">
