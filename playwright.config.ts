@@ -13,6 +13,14 @@ export default defineConfig({
     ...devices['Pixel 7'],
     baseURL: 'http://localhost:3100',
     trace: 'retain-on-failure',
+    permissions: ['camera'],
+    launchOptions: {
+      args: [
+        '--use-fake-ui-for-media-stream',
+        '--use-fake-device-for-media-stream',
+        '--use-file-for-fake-video-capture=tests/e2e/fixtures/folha.y4m',
+      ],
+    },
   },
   webServer: {
     command: 'npm run build && npm exec -- next start -p 3100',
