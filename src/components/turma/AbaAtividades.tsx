@@ -8,6 +8,7 @@ import { Renomear } from '@/components/ui/Renomear';
 import { apagarAtividade, criarAtividade, renomearAtividade } from '@/lib/dados/atividades';
 import { calcularEntregas } from '@/lib/dominio/entregas';
 import { formatarData } from '@/lib/dominio/formato';
+import { mensagemErro } from '@/lib/mensagemErro';
 import { clienteNavegador } from '@/lib/supabase/navegador';
 import type { Aluno, Atividade } from '@/lib/tipos';
 
@@ -16,19 +17,31 @@ type Props = { turmaId: string; atividades: Atividade[]; alunos: Aluno[]; entreg
 function ApagarAtividade({ atividade }: { atividade: Atividade }) {
   const router = useRouter();
   const [aberto, setAberto] = useState(false);
+  const [ocupado, setOcupado] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
   return (
     <>
-      <button onClick={() => setAberto(true)} className="text-sm text-red-600">Apagar</button>
+      <button onClick={() => { setErro(null); setAberto(true); }} className="text-sm text-red-600">Apagar</button>
       {aberto && (
         <Confirmar
           titulo={`Apagar a atividade ${atividade.nome}?`}
           mensagem="Os arquivos continuam nas pastas dos alunos, em “Outros”."
           textoConfirmar="Apagar"
+          ocupado={ocupado}
+          erro={erro}
           onCancelar={() => setAberto(false)}
           onConfirmar={async () => {
-            await apagarAtividade(clienteNavegador(), atividade.id);
-            setAberto(false);
-            router.refresh();
+            setOcupado(true);
+            setErro(null);
+            try {
+              await apagarAtividade(clienteNavegador(), atividade.id);
+              setAberto(false);
+              router.refresh();
+            } catch (e) {
+              setErro(mensagemErro(e));
+            } finally {
+              setOcupado(false);
+            }
           }}
         />
       )}

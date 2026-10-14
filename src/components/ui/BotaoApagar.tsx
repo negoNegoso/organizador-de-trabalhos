@@ -27,6 +27,7 @@ export function BotaoApagar({ escopo, rotulo, descricao, depois }: Props) {
 
   async function confirmar() {
     setOcupado(true);
+    setErro(null);
     try {
       await apagar(clienteNavegador(), escopo);
       setQuantidade(null);
@@ -47,13 +48,14 @@ export function BotaoApagar({ escopo, rotulo, descricao, depois }: Props) {
   return (
     <>
       <button onClick={abrir} className="text-sm text-red-600">{rotulo}</button>
-      {erro && <p role="alert" className="text-sm text-red-600">{erro}</p>}
+      {erro && quantidade === null && <p role="alert" className="text-sm text-red-600">{erro}</p>}
       {quantidade !== null && (
         <Confirmar
           titulo={`Apagar ${descricao}?`}
           mensagem={mensagem}
           textoConfirmar="Apagar"
           ocupado={ocupado}
+          erro={erro}
           onConfirmar={confirmar}
           onCancelar={() => setQuantidade(null)}
         />
