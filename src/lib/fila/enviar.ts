@@ -13,14 +13,19 @@ export function criarEnviar(sb: SupabaseClient): Enviar {
     const caminho = caminhoPdf(item.alunoId, item.id);
     const caminhos = [caminho];
 
+    const limparEFalhar = async (mensagem: string): Promise<never> => {
+      await bucket.remove(caminhos);
+      throw new Error(mensagem);
+    };
+
     const pdf = await bucket.upload(caminho, item.pdf, { contentType: 'application/pdf', upsert: true });
-    if (pdf.error) throw new Error(pdf.error.message);
+    if (pdf.error) return limparEFalhar(pdf.error.message);
 
     if (item.miniatura) {
       const thumb = caminhoMiniatura(caminho);
-      const r = await bucket.upload(thumb, item.miniatura, { contentType: 'image/jpeg', upsert: true });
-      if (r.error) throw new Error(r.error.message);
       caminhos.push(thumb);
+      const r = await bucket.upload(thumb, item.miniatura, { contentType: 'image/jpeg', upsert: true });
+      if (r.error) return limparEFalhar(r.error.message);
     }
 
     const { error } = await sb.from('arquivos').insert({
@@ -35,7 +40,6 @@ export function criarEnviar(sb: SupabaseClient): Enviar {
     });
     if (!error || error.code === '23505') return;
 
-    await bucket.remove(caminhos);
-    throw new Error(error.code === '23503' ? 'O aluno ou a atividade foi apagado.' : error.message);
+    return limparEFalhar(error.code === '23503' ? 'O aluno ou a atividade foi apagado.' : error.message);
   };
 }
