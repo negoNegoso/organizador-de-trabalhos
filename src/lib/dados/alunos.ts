@@ -15,7 +15,7 @@ export async function listarAlunos(sb: SupabaseClient, turmaId: string): Promise
 
 export async function obterAluno(sb: SupabaseClient, id: string): Promise<AlunoDetalhe> {
   return checar(
-    await sb.from('alunos').select(`${CAMPOS},turmas(id,nome,ano_letivo_id,anos_letivos(ano))`).eq('id', id).single(),
+    await sb.from('alunos').select(`${CAMPOS},turmas(id,nome,cor,ano_letivo_id,anos_letivos(ano))`).eq('id', id).single(),
   );
 }
 

@@ -1,6 +1,7 @@
-import Link from 'next/link';
 import { AcoesAluno } from '@/components/aluno/AcoesAluno';
 import { ListaArquivos } from '@/components/aluno/ListaArquivos';
+import { Cabecalho } from '@/components/ui/Cabecalho';
+import { EtiquetaTurma } from '@/components/ui/EtiquetaTurma';
 import { obterAluno } from '@/lib/dados/alunos';
 import { listarArquivosDoAluno } from '@/lib/dados/arquivos';
 import { listarAtividades } from '@/lib/dados/atividades';
@@ -17,16 +18,18 @@ export default async function PaginaAluno({ params }: { params: Promise<{ alunoI
   ]);
 
   return (
-    <div className="space-y-4">
-      <nav className="text-sm">
-        <Link href={`/turmas/${aluno.turma_id}`}>← {aluno.turmas.nome} · {aluno.turmas.anos_letivos.ano}</Link>
-      </nav>
-      <h1 className="text-xl font-semibold">{aluno.nome}</h1>
-      <AcoesAluno aluno={{ id: aluno.id, turma_id: aluno.turma_id, nome: aluno.nome }} />
-      <div className="flex gap-2">
-        <Link href={`/alunos/${alunoId}/escanear`} className="flex-1 rounded bg-blue-700 py-3 text-center text-white">Escanear</Link>
-        <Link href={`/alunos/${alunoId}/enviar`} className="flex-1 rounded border bg-white py-3 text-center">Enviar arquivo</Link>
-      </div>
+    <div>
+      <Cabecalho
+        voltar={{ href: `/turmas/${aluno.turma_id}`, rotulo: aluno.turmas.nome }}
+        titulo={aluno.nome}
+        subtitulo={
+          <span className="flex flex-wrap items-center gap-2">
+            <EtiquetaTurma cor={aluno.turmas.cor} texto={`${aluno.turmas.nome} · ${aluno.turmas.anos_letivos.ano}`} />
+            <span>{arquivos.length} trabalho(s)</span>
+          </span>
+        }
+        acoes={<AcoesAluno aluno={{ id: aluno.id, turma_id: aluno.turma_id, nome: aluno.nome }} />}
+      />
       <ListaArquivos grupos={agruparPorAtividade(arquivos, atividades)} alunoId={alunoId} />
     </div>
   );
