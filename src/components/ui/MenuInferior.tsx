@@ -11,12 +11,29 @@ export function MenuInferior({ aberto, titulo, onFechar, children }: Props) {
   const inicioY = useRef<number | null>(null);
   const [deslocamento, setDeslocamento] = useState(0);
 
+  const anterior = useRef<HTMLElement | null>(null);
+
+  function restaurarFoco() {
+    const el = anterior.current;
+    anterior.current = null;
+    if (el && el.isConnected) el.focus();
+  }
+
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (aberto && !d.open) d.showModal();
-    if (!aberto && d.open) d.close();
+    if (aberto && !d.open) {
+      anterior.current = document.activeElement as HTMLElement | null;
+      d.showModal();
+    }
+    if (!aberto && d.open) {
+      d.close();
+      restaurarFoco();
+    }
   }, [aberto]);
+
+  // Fechar por desmontagem (pai remove o menu): devolve o foco a quem o abriu.
+  useEffect(() => restaurarFoco, []);
 
   return (
     <dialog
@@ -45,6 +62,10 @@ export function MenuInferior({ aberto, titulo, onFechar, children }: Props) {
             }}
             onPointerMove={(e) => {
               if (inicioY.current !== null) setDeslocamento(Math.max(0, e.clientY - inicioY.current));
+            }}
+            onPointerCancel={() => {
+              inicioY.current = null;
+              setDeslocamento(0);
             }}
             onPointerUp={() => {
               const arrastou = deslocamento;

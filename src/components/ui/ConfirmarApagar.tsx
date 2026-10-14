@@ -47,7 +47,9 @@ export function ConfirmarApagar({ escopo, descricao, depois, onFechar }: Props) 
   const mensagem = ehArquivo
     ? 'O arquivo será apagado definitivamente.'
     : quantidade === null
-      ? 'Contando arquivos…'
+      ? erro
+        ? 'Não consegui contar os arquivos.'
+        : 'Contando arquivos…'
       : `Isso vai apagar ${quantidade} arquivo(s). Não dá para desfazer.`;
 
   return (

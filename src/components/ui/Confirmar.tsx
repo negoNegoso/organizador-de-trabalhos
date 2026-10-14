@@ -14,11 +14,11 @@ type Props = {
 
 export function Confirmar({ titulo, mensagem, textoConfirmar, ocupado, erro, onConfirmar, onCancelar }: Props) {
   return (
-    <MenuInferior aberto titulo={titulo} onFechar={onCancelar}>
+    <MenuInferior aberto titulo={titulo} onFechar={() => !ocupado && onCancelar()}>
       <p className="text-sm text-slate-600">{mensagem}</p>
       {erro && <p role="alert" className="mt-2 text-sm text-red-600">{erro}</p>}
       <div className="mt-4 grid grid-cols-2 gap-2">
-        <button type="button" onClick={onCancelar} className="h-12 rounded-xl border border-slate-200 font-medium">
+        <button type="button" onClick={onCancelar} disabled={ocupado} className="h-12 rounded-xl border border-slate-200 font-medium">
           Cancelar
         </button>
         <button

@@ -16,6 +16,7 @@ test('confirmação de apagar é um menu inferior que fecha com Esc e com Cancel
   await expect(dialogo).toContainText('Isso vai apagar 0 arquivo(s).');
   await page.keyboard.press('Escape');
   await expect(dialogo).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Apagar turma' })).toBeFocused();
 
   await page.getByRole('button', { name: 'Apagar turma' }).click();
   await dialogo.getByRole('button', { name: 'Cancelar' }).click();
