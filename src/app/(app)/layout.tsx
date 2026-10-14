@@ -1,16 +1,14 @@
-import Link from 'next/link';
-import { BotaoSair } from '@/components/BotaoSair';
 import { StatusFila } from '@/components/fila/StatusFila';
+import { BarraAbas } from '@/components/navegacao/BarraAbas';
 
 export default function LayoutApp({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-dvh">
-      <header className="flex items-center justify-between border-b bg-white px-4 py-3">
-        <Link href="/" className="font-semibold">Organizador</Link>
-        <BotaoSair />
-      </header>
-      <StatusFila />
-      <main className="mx-auto max-w-2xl p-4">{children}</main>
+    <div className="min-h-dvh bg-slate-50 pb-[calc(6rem+env(safe-area-inset-bottom))]">
+      <main className="mx-auto max-w-2xl px-4 pt-4">{children}</main>
+      <div className="fixed inset-x-0 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-20">
+        <StatusFila />
+      </div>
+      <BarraAbas />
     </div>
   );
 }

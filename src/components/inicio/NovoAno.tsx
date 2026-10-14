@@ -26,9 +26,9 @@ export function NovoAno() {
     <form onSubmit={criar} className="flex flex-wrap items-end gap-2">
       <div>
         <label htmlFor="novo-ano" className="block text-sm">Ano</label>
-        <input id="novo-ano" type="number" min={2000} max={2100} value={ano} onChange={(e) => setAno(e.target.value)} className="w-28 rounded border px-3 py-2" />
+        <input id="novo-ano" type="number" min={2000} max={2100} value={ano} onChange={(e) => setAno(e.target.value)} className="h-12 w-28 rounded-xl border border-slate-200 bg-white px-3" />
       </div>
-      <button className="rounded bg-blue-700 px-4 py-2 text-white">Criar ano</button>
+      <button className="h-12 rounded-xl bg-blue-600 px-4 font-medium text-white">Criar ano</button>
       {erro && <p role="alert" className="w-full text-sm text-red-600">{erro}</p>}
     </form>
   );

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { AcoesAno } from '@/components/ano/AcoesAno';
-import { NovaTurma } from '@/components/ano/NovaTurma';
+import { NovaTurma } from '@/components/turma/NovaTurma';
 import { obterAno } from '@/lib/dados/anos';
 import { listarTurmas } from '@/lib/dados/turmas';
 import { clienteServidor } from '@/lib/supabase/servidor';
@@ -24,7 +24,7 @@ export default async function PaginaAno({ params }: { params: Promise<{ anoId: s
         ))}
       </ul>
       {turmas.length === 0 && <p className="text-sm text-gray-600">Nenhuma turma ainda.</p>}
-      <NovaTurma anoId={anoId} />
+      <NovaTurma anoId={anoId} coresUsadas={turmas.map((t) => t.cor)} />
     </div>
   );
 }

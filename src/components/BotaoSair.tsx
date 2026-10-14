@@ -12,7 +12,7 @@ export function BotaoSair() {
         router.replace('/login');
         router.refresh();
       }}
-      className="text-sm text-gray-600"
+      className="h-12 w-full rounded-xl border border-slate-200 bg-white font-medium text-red-600"
     >
       Sair
     </button>

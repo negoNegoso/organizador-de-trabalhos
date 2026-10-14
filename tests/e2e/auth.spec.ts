@@ -18,6 +18,7 @@ test('senha errada mostra erro', async ({ page }) => {
 test('entra e sai', async ({ page }) => {
   await entrar(page);
   await expect(page.getByRole('heading', { name: 'Início' })).toBeVisible();
+  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Mais' }).click();
   await page.getByRole('button', { name: 'Sair' }).click();
   await expect(page).toHaveURL(/\/login$/);
 });
