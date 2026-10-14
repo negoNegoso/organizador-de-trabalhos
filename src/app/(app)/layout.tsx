@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { BotaoSair } from '@/components/BotaoSair';
+import { StatusFila } from '@/components/fila/StatusFila';
 
 export default function LayoutApp({ children }: { children: React.ReactNode }) {
   return (
@@ -8,6 +9,7 @@ export default function LayoutApp({ children }: { children: React.ReactNode }) {
         <Link href="/" className="font-semibold">Organizador</Link>
         <BotaoSair />
       </header>
+      <StatusFila />
       <main className="mx-auto max-w-2xl p-4">{children}</main>
     </div>
   );
