@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatarBytes, formatarData, hojeIso, LIMITE_STORAGE, nomeDownload, tituloPadrao, usoAlto } from './formato';
+import { formatarBytes, formatarData, hojeIso, LIMITE_STORAGE, nomeDownload, plural, tituloPadrao, usoAlto } from './formato';
 
 describe('formatarBytes', () => {
   it('formata em B, KB, MB e GB no padrão brasileiro', () => {
@@ -34,5 +34,13 @@ describe('datas', () => {
   });
   it('hojeIso devolve AAAA-MM-DD local', () => {
     expect(hojeIso(new Date(2026, 0, 2))).toBe('2026-01-02');
+  });
+});
+
+describe('plural', () => {
+  it('usa o singular só para 1', () => {
+    expect(plural(1, 'turma', 'turmas')).toBe('1 turma');
+    expect(plural(0, 'turma', 'turmas')).toBe('0 turmas');
+    expect(plural(2, 'atividade', 'atividades')).toBe('2 atividades');
   });
 });

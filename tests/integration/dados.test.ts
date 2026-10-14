@@ -4,9 +4,9 @@ import { apagar, contarArquivos } from '@/lib/dados/apagar';
 import { criarAno, definirArquivado, listarAnos } from '@/lib/dados/anos';
 import { buscarAlunos, criarAlunos, listarAlunos, obterAluno } from '@/lib/dados/alunos';
 import { alunosComEntrega, entregasDaTurma } from '@/lib/dados/atividades';
-import { listarArquivosDoAluno, moverArquivo, usoStorage } from '@/lib/dados/arquivos';
+import { listarArquivosDoAluno, listarRecentes, moverArquivo, usoStorage } from '@/lib/dados/arquivos';
 import { BUCKET } from '@/lib/dados/storage';
-import { criarTurma, listarTurmas } from '@/lib/dados/turmas';
+import { criarTurma, definirCorTurma, listarTurmas, listarTurmasComContagem, listarTurmasPorAno } from '@/lib/dados/turmas';
 import { clienteLogado, criarArquivo, limparTudo, semear } from '../compartilhado/supabase';
 
 let sb: SupabaseClient;
@@ -37,7 +37,7 @@ describe('alunos', () => {
   it('busca ignora acento e maiúscula', async () => {
     const s = await semear(sb);
     expect(await buscarAlunos(sb, 'JOAO')).toEqual([
-      { id: s.alunos.joao, nome: 'João Pedro', turma: { id: s.turmaId, nome: '3º A' }, ano: 2026 },
+      { id: s.alunos.joao, nome: 'João Pedro', turma: { id: s.turmaId, nome: '3º A', cor: 'azul' }, ano: 2026 },
     ]);
   });
 
@@ -153,5 +153,64 @@ describe('cadastro', () => {
     });
     expect(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY).toBeTruthy();
     expect(error?.code).toBe('signup_disabled');
+  });
+});
+
+describe('turmas: cor e contagem', () => {
+  it('turma nova usa azul por padrão e aceita cor escolhida', async () => {
+    const s = await semear(sb);
+    const b = await criarTurma(sb, s.anoId, '3º B', 'roxo');
+    expect(b.cor).toBe('roxo');
+    const [a] = (await listarTurmas(sb, s.anoId)).filter((t) => t.nome === '3º A');
+    expect(a.cor).toBe('azul');
+  });
+
+  it('banco recusa cor fora da paleta', async () => {
+    const s = await semear(sb);
+    const { error } = await sb.from('turmas').insert({ ano_letivo_id: s.anoId, nome: 'X', cor: 'preto' });
+    expect(error?.code).toBe('23514');
+  });
+
+  it('muda a cor', async () => {
+    const s = await semear(sb);
+    await definirCorTurma(sb, s.turmaId, 'verde');
+    expect((await listarTurmas(sb, s.anoId))[0].cor).toBe('verde');
+  });
+
+  it('lista turmas do ano com número de alunos', async () => {
+    const s = await semear(sb);
+    await criarTurma(sb, s.anoId, '3º B', 'laranja');
+    expect((await listarTurmasComContagem(sb, s.anoId)).map((t) => [t.nome, t.cor, t.total_alunos])).toEqual([
+      ['3º A', 'azul', 2],
+      ['3º B', 'laranja', 0],
+    ]);
+  });
+
+  it('lista todas as turmas com o ano', async () => {
+    const s = await semear(sb);
+    const outroAno = await criarAno(sb, 2025);
+    await criarTurma(sb, outroAno.id, '2º C', 'rosa');
+    const todas = await listarTurmasPorAno(sb);
+    expect(todas.map((t) => [t.ano.ano, t.nome, t.total_alunos])).toEqual([
+      [2026, '3º A', 2],
+      [2025, '2º C', 0],
+    ]);
+    expect(todas[0].ano).toMatchObject({ id: s.anoId, arquivado: false });
+  });
+});
+
+describe('recentes', () => {
+  it('lista os mais recentes primeiro, com aluno e turma, respeitando o limite', async () => {
+    const s = await semear(sb);
+    await criarArquivo(sb, s.alunos.maria, null, 'Primeiro');
+    await criarArquivo(sb, s.alunos.joao, null, 'Segundo');
+    await criarArquivo(sb, s.alunos.maria, null, 'Terceiro');
+    const r = await listarRecentes(sb, 2);
+    expect(r.map((x) => x.titulo)).toEqual(['Terceiro', 'Segundo']);
+    expect(r[1]).toMatchObject({ aluno: { id: s.alunos.joao, nome: 'João Pedro' }, turma: { nome: '3º A', cor: 'azul' } });
+  });
+
+  it('sem arquivos devolve lista vazia', async () => {
+    expect(await listarRecentes(sb)).toEqual([]);
   });
 });

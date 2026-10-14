@@ -16,7 +16,7 @@ function Campo({ rotulo, valor, opcoes, vazio, onMudar }: { rotulo: string; valo
   return (
     <label className="block text-sm">
       {rotulo}
-      <select value={valor} onChange={(e) => onMudar(e.target.value)} className="mt-1 w-full rounded border bg-white px-3 py-2">
+      <select value={valor} onChange={(e) => onMudar(e.target.value)} className="mt-1 h-12 w-full rounded-xl border border-slate-200 bg-white px-3">
         {vazio && <option value="">{vazio}</option>}
         {opcoes.map((o) => <option key={o.valor} value={o.valor}>{o.rotulo}</option>)}
       </select>
@@ -109,7 +109,7 @@ export function EscolherLote({ anos }: { anos: AnoLetivo[] }) {
       <button
         disabled={!atividadeId}
         onClick={() => router.push(`/lote/${atividadeId}`)}
-        className="w-full rounded bg-blue-700 py-3 text-white disabled:opacity-50"
+        className="h-12 w-full rounded-xl bg-blue-600 font-medium text-white disabled:opacity-50"
       >
         Começar
       </button>

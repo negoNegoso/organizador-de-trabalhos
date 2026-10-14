@@ -6,12 +6,13 @@ import { buscarAlunos } from '@/lib/dados/alunos';
 import { normalizar } from '@/lib/dominio/busca';
 import { clienteNavegador } from '@/lib/supabase/navegador';
 import type { ResultadoBusca } from '@/lib/tipos';
+import { ESTILO_COR } from '@/lib/ui/cores';
 
-type Props = { rotulo?: string; onEscolher?: (r: ResultadoBusca) => void; excluirId?: string };
+type Props = { rotulo?: string; onEscolher?: (r: ResultadoBusca) => void; excluirId?: string; autoFocus?: boolean };
 
 const rotuloDe = (r: ResultadoBusca) => `${r.nome} — ${r.turma.nome} (${r.ano})`;
 
-export function BuscarAluno({ rotulo = 'Buscar aluno', onEscolher, excluirId }: Props) {
+export function BuscarAluno({ rotulo = 'Buscar aluno', onEscolher, excluirId, autoFocus }: Props) {
   const id = useId();
   const [termo, setTermo] = useState('');
   const [resultados, setResultados] = useState<ResultadoBusca[]>([]);
@@ -39,15 +40,15 @@ export function BuscarAluno({ rotulo = 'Buscar aluno', onEscolher, excluirId }: 
   return (
     <div className="space-y-2">
       <label htmlFor={id} className="block text-sm">{rotulo}</label>
-      <input id={id} type="search" value={termo} onChange={(e) => setTermo(e.target.value)} className="w-full rounded border px-3 py-2" />
+      <input id={id} type="search" value={termo} onChange={(e) => setTermo(e.target.value)} autoFocus={autoFocus} className="h-12 w-full rounded-xl border border-slate-200 bg-white px-3" />
       {lista.length > 0 && (
-        <ul className="divide-y rounded border bg-white">
+        <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
           {lista.map((r) => (
             <li key={r.id}>
               {onEscolher ? (
-                <button type="button" onClick={() => onEscolher(r)} className="w-full p-3 text-left">{rotuloDe(r)}</button>
+                <button type="button" onClick={() => onEscolher(r)} className="w-full p-3 text-left"><span aria-hidden className={`mr-2 inline-block h-2.5 w-2.5 rounded-full ${ESTILO_COR[r.turma.cor].ponto}`} />{rotuloDe(r)}</button>
               ) : (
-                <Link href={`/alunos/${r.id}`} className="block p-3">{rotuloDe(r)}</Link>
+                <Link href={`/alunos/${r.id}`} className="block p-3"><span aria-hidden className={`mr-2 inline-block h-2.5 w-2.5 rounded-full ${ESTILO_COR[r.turma.cor].ponto}`} />{rotuloDe(r)}</Link>
               )}
             </li>
           ))}

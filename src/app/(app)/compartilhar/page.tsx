@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { EnviarArquivos } from '@/components/envio/EnviarArquivos';
 import { BuscarAluno } from '@/components/ui/BuscarAluno';
+import { Cabecalho } from '@/components/ui/Cabecalho';
 import { listarAtividades } from '@/lib/dados/atividades';
 import { lerCompartilhados, limparCompartilhados } from '@/lib/compartilhar';
 import { clienteNavegador } from '@/lib/supabase/navegador';
@@ -38,19 +39,22 @@ export default function PaginaCompartilhar() {
   if (!aluno) {
     return (
       <div className="space-y-3">
-        <h1 className="text-xl font-semibold">Recebido: {arquivos.length} arquivo(s)</h1>
+        <Cabecalho titulo="Arquivos recebidos" subtitulo={`${arquivos.length} arquivo(s)`} />
         <BuscarAluno rotulo="Para qual aluno?" onEscolher={setAluno} />
       </div>
     );
   }
   if (!atividades) return <p>Carregando…</p>;
   return (
-    <EnviarArquivos
-      aluno={{ id: aluno.id, nome: aluno.nome }}
-      atividades={atividades}
-      arquivosIniciais={arquivos}
-      voltarPara={`/alunos/${aluno.id}`}
-      aoEnfileirar={() => limparCompartilhados()}
-    />
+    <>
+      <Cabecalho titulo="Enviar arquivo" subtitulo={`Para ${aluno.nome}`} />
+      <EnviarArquivos
+        aluno={{ id: aluno.id, nome: aluno.nome }}
+        atividades={atividades}
+        arquivosIniciais={arquivos}
+        voltarPara={`/alunos/${aluno.id}`}
+        aoEnfileirar={() => limparCompartilhados()}
+      />
+    </>
   );
 }

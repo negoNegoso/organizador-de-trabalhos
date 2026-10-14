@@ -31,11 +31,11 @@ export function FormLogin() {
     <form onSubmit={entrar} className="space-y-4">
       <div>
         <label htmlFor="email" className="block text-sm">Email</label>
-        <input id="email" name="email" type="email" required autoComplete="email" className="w-full rounded border px-3 py-2" />
+        <input id="email" name="email" type="email" required autoComplete="email" className="w-full rounded-xl border px-3 py-2" />
       </div>
       <div>
         <label htmlFor="senha" className="block text-sm">Senha</label>
-        <input id="senha" name="senha" type="password" required autoComplete="current-password" className="w-full rounded border px-3 py-2" />
+        <input id="senha" name="senha" type="password" required autoComplete="current-password" className="w-full rounded-xl border px-3 py-2" />
       </div>
       {erro && <p role="alert" className="text-sm text-red-600">{erro}</p>}
       <button disabled={enviando} className="w-full rounded bg-blue-700 py-2 text-white disabled:opacity-50">

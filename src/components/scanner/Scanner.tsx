@@ -107,7 +107,7 @@ export function Scanner(props: Props) {
           />
         )}
         {etapa === 'destino' && (
-          <div className="h-full overflow-y-auto bg-white p-4 text-gray-900">
+          <div className="h-full overflow-y-auto bg-white p-4 text-slate-900">
             <button onClick={() => setEtapa('revisao')} className="mb-3 text-sm text-blue-700">← Voltar para as páginas</button>
             {props.modo === 'avulso' ? (
               <EscolherDestino

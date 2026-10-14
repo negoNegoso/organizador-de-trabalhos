@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { AbaAlunos } from '@/components/turma/AbaAlunos';
 import { AbaAtividades } from '@/components/turma/AbaAtividades';
 import { AcoesTurma } from '@/components/turma/AcoesTurma';
+import { Cabecalho } from '@/components/ui/Cabecalho';
 import { listarAlunos } from '@/lib/dados/alunos';
 import { entregasDaTurma, listarAtividades } from '@/lib/dados/atividades';
+import { plural } from '@/lib/dominio/formato';
 import { obterTurma } from '@/lib/dados/turmas';
 import { clienteServidor } from '@/lib/supabase/servidor';
 
@@ -19,18 +21,25 @@ export default async function PaginaTurma({ params, searchParams }: Props) {
     listarAtividades(sb, turmaId),
     entregasDaTurma(sb, turmaId),
   ]);
-  const classeAba = (ativa: boolean) => `pb-2 ${ativa ? 'border-b-2 border-blue-700 font-medium' : 'text-gray-600'}`;
+  const naAtividades = aba === 'atividades';
+  const classeAba = (ativa: boolean) =>
+    `border-b-[3px] pb-2 ${ativa ? 'border-white font-semibold' : 'border-transparent text-white/80'}`;
 
   return (
-    <div className="space-y-4">
-      <nav className="text-sm"><Link href={`/anos/${turma.ano_letivo_id}`}>← {turma.anos_letivos.ano}</Link></nav>
-      <h1 className="text-xl font-semibold">{turma.nome}</h1>
-      <AcoesTurma turma={turma} />
-      <div role="tablist" className="flex gap-6 border-b">
-        <Link role="tab" aria-selected={aba !== 'atividades'} href="?aba=alunos" className={classeAba(aba !== 'atividades')}>Alunos</Link>
-        <Link role="tab" aria-selected={aba === 'atividades'} href="?aba=atividades" className={classeAba(aba === 'atividades')}>Atividades</Link>
-      </div>
-      {aba === 'atividades' ? (
+    <div>
+      <Cabecalho
+        cor={turma.cor}
+        voltar={{ href: `/anos/${turma.ano_letivo_id}`, rotulo: String(turma.anos_letivos.ano) }}
+        titulo={turma.nome}
+        subtitulo={`${plural(alunos.length, 'aluno', 'alunos')} · ${plural(atividades.length, 'atividade', 'atividades')}`}
+        acoes={<AcoesTurma turma={turma} />}
+      >
+        <div role="tablist" className="mt-3 flex gap-6 text-sm">
+          <Link role="tab" aria-selected={!naAtividades} href="?aba=alunos" className={classeAba(!naAtividades)}>Alunos</Link>
+          <Link role="tab" aria-selected={naAtividades} href="?aba=atividades" className={classeAba(naAtividades)}>Atividades</Link>
+        </div>
+      </Cabecalho>
+      {naAtividades ? (
         <AbaAtividades turmaId={turmaId} atividades={atividades} alunos={alunos} entregas={entregas} />
       ) : (
         <AbaAlunos turmaId={turmaId} alunos={alunos} />

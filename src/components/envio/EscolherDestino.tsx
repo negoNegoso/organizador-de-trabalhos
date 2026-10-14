@@ -30,7 +30,7 @@ export function EscolherDestino({ atividades, textoBotao, ocupado, onConfirmar }
     <form onSubmit={confirmar} className="space-y-3">
       <label className="block text-sm">
         Atividade
-        <select value={atividadeId} onChange={(e) => setAtividadeId(e.target.value)} className="mt-1 w-full rounded border bg-white px-3 py-2">
+        <select value={atividadeId} onChange={(e) => setAtividadeId(e.target.value)} className="mt-1 h-12 w-full rounded-xl border border-slate-200 bg-white px-3">
           {atividades.map((a) => <option key={a.id} value={a.id}>{a.nome}</option>)}
           <option value="">Sem atividade (título livre)</option>
         </select>
@@ -38,10 +38,10 @@ export function EscolherDestino({ atividades, textoBotao, ocupado, onConfirmar }
       {!atividadeId && (
         <label className="block text-sm">
           Título
-          <input value={titulo} onChange={(e) => setTitulo(e.target.value)} className="mt-1 w-full rounded border px-3 py-2" />
+          <input value={titulo} onChange={(e) => setTitulo(e.target.value)} className="mt-1 h-12 w-full rounded-xl border border-slate-200 bg-white px-3" />
         </label>
       )}
-      <button disabled={ocupado} className="w-full rounded bg-blue-700 py-3 text-white disabled:opacity-50">
+      <button disabled={ocupado} className="h-12 w-full rounded-xl bg-blue-600 font-medium text-white disabled:opacity-50">
         {ocupado ? 'Preparando…' : textoBotao}
       </button>
     </form>

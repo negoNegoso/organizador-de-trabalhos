@@ -158,7 +158,7 @@ export function Camera({ onCapturar, onErro }: Props) {
         <p className="absolute inset-x-2 top-2 rounded bg-black/60 p-2 text-sm">Carregando detecção…</p>
       )}
       {statusCv === 'falhou' && (
-        <p className="absolute inset-x-2 top-2 rounded bg-yellow-100 p-2 text-sm text-gray-900">
+        <p className="absolute inset-x-2 top-2 rounded bg-yellow-100 p-2 text-sm text-slate-900">
           Detecção automática indisponível. Ajuste os cantos depois da foto.
         </p>
       )}

@@ -36,7 +36,7 @@ test('lote: detecta a folha, salva para a aluna e a tira da lista', async ({ pag
 
 test('avulso: escaneia, ajusta cantos e salva na pasta', async ({ page }) => {
   await page.goto(`/alunos/${s.alunos.joao}`);
-  await page.getByRole('link', { name: 'Escanear' }).click();
+  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('button', { name: 'Escanear' }).click();
   await expect(page.locator('canvas[data-detectado="sim"]')).toBeAttached({ timeout: 30_000 });
   await page.getByRole('button', { name: 'Capturar' }).click();
   await page.getByRole('button', { name: 'Revisar (1)' }).click();

@@ -9,7 +9,9 @@ test.beforeEach(async ({ page }) => {
   s = await semear(await clienteLogado());
   await entrar(page);
   await page.goto(`/alunos/${s.alunos.maria}`);
-  await page.getByRole('link', { name: 'Enviar arquivo' }).click();
+  await page.getByRole('button', { name: 'Ações do aluno' }).click();
+  await page.getByRole('dialog', { name: 'Maria Souza' }).getByRole('button', { name: 'Enviar arquivo' }).click();
+  await expect(page).toHaveURL(`/alunos/${s.alunos.maria}/enviar`);
 });
 
 const imagemJpeg = (w: number, h: number) =>

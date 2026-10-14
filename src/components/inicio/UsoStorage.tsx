@@ -6,8 +6,8 @@ export function UsoStorage({ bytes }: { bytes: number }) {
   return (
     <section className="space-y-1 text-sm">
       <p>{formatarBytes(bytes)} de 1 GB usados</p>
-      <div className="h-2 rounded bg-gray-200">
-        <div className={`h-2 rounded ${alto ? 'bg-red-500' : 'bg-blue-600'}`} style={{ width: `${pct}%` }} />
+      <div className="h-2 rounded-full bg-slate-200">
+        <div className={`h-2 rounded-full ${alto ? 'bg-red-500' : 'bg-blue-600'}`} style={{ width: `${pct}%` }} />
       </div>
       {alto && (
         <p role="alert" className="text-red-600">

@@ -9,10 +9,11 @@ type Props = {
   textoBotao: string;
   placeholder?: string;
   inicial?: string;
+  autoFocus?: boolean;
   onSalvar: (nome: string) => Promise<void>;
 };
 
-export function FormNome({ rotulo, textoBotao, placeholder, inicial = '', onSalvar }: Props) {
+export function FormNome({ rotulo, textoBotao, placeholder, inicial = '', autoFocus, onSalvar }: Props) {
   const id = useId();
   const [valor, setValor] = useState(inicial);
   const [erro, setErro] = useState<string | null>(null);
@@ -38,9 +39,9 @@ export function FormNome({ rotulo, textoBotao, placeholder, inicial = '', onSalv
     <form onSubmit={enviar} className="flex flex-wrap items-end gap-2">
       <div className="min-w-0 flex-1">
         <label htmlFor={id} className="block text-sm">{rotulo}</label>
-        <input id={id} value={valor} onChange={(e) => setValor(e.target.value)} placeholder={placeholder} className="w-full rounded border px-3 py-2" />
+        <input id={id} value={valor} onChange={(e) => setValor(e.target.value)} placeholder={placeholder} autoFocus={autoFocus} className="h-12 w-full rounded-xl border border-slate-200 bg-white px-3" />
       </div>
-      <button disabled={ocupado} className="rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-50">{textoBotao}</button>
+      <button disabled={ocupado} className="h-12 rounded-xl bg-blue-600 px-4 font-medium text-white disabled:opacity-50">{textoBotao}</button>
       {erro && <p role="alert" className="w-full text-sm text-red-600">{erro}</p>}
     </form>
   );

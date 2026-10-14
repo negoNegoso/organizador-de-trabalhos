@@ -71,8 +71,8 @@ export function EditorCantos({ pagina, onSalvar, onCancelar }: Props) {
         ))}
       </svg>
       <div className="flex gap-2 p-3">
-        <button onClick={onCancelar} className="flex-1 rounded border py-3">Cancelar</button>
-        <button onClick={() => setCantos(cantosDaImagem({ width: pagina.largura, height: pagina.altura }))} className="flex-1 rounded border py-3">
+        <button onClick={onCancelar} className="flex-1 rounded-xl border py-3">Cancelar</button>
+        <button onClick={() => setCantos(cantosDaImagem({ width: pagina.largura, height: pagina.altura }))} className="flex-1 rounded-xl border py-3">
           Página inteira
         </button>
         <button onClick={() => onSalvar(cantos)} className="flex-1 rounded bg-blue-600 py-3">Aplicar</button>
