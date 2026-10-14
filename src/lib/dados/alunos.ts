@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { normalizar } from '../dominio/busca';
 import type { Aluno, AlunoComContagem, AlunoDetalhe, ResultadoBusca } from '../tipos';
+import type { CorTurma } from '../ui/cores';
 import { checar, type Resposta } from './consulta';
 
 const CAMPOS = 'id,turma_id,nome';
@@ -33,10 +34,10 @@ export async function buscarAlunos(sb: SupabaseClient, termo: string): Promise<R
   const t = normalizar(termo);
   if (t.length < 2) return [];
   const padrao = `%${t.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
-  type Linha = { id: string; nome: string; turmas: { id: string; nome: string; anos_letivos: { ano: number } } };
+  type Linha = { id: string; nome: string; turmas: { id: string; nome: string; cor: CorTurma; anos_letivos: { ano: number } } };
   const resposta = await sb
     .from('alunos')
-    .select('id,nome,turmas(id,nome,anos_letivos(ano))')
+    .select('id,nome,turmas(id,nome,cor,anos_letivos(ano))')
     .ilike('nome_busca', padrao)
     .order('nome')
     .limit(30);
@@ -45,7 +46,7 @@ export async function buscarAlunos(sb: SupabaseClient, termo: string): Promise<R
   return linhas.map((l) => ({
     id: l.id,
     nome: l.nome,
-    turma: { id: l.turmas.id, nome: l.turmas.nome },
+    turma: { id: l.turmas.id, nome: l.turmas.nome, cor: l.turmas.cor },
     ano: l.turmas.anos_letivos.ano,
   }));
 }
