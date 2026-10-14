@@ -11,14 +11,16 @@ test('confirmação de apagar é um menu inferior que fecha com Esc e com Cancel
   await entrar(page);
   await page.goto(`/turmas/${s.turmaId}`);
 
-  await page.getByRole('button', { name: 'Apagar turma' }).click();
+  await page.getByRole('button', { name: 'Ações da turma' }).click();
+  await page.getByRole('dialog', { name: '3º A' }).getByRole('button', { name: 'Apagar turma' }).click();
   const dialogo = page.getByRole('dialog', { name: 'Apagar a turma 3º A?' });
   await expect(dialogo).toContainText('Isso vai apagar 0 arquivo(s).');
   await page.keyboard.press('Escape');
   await expect(dialogo).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Apagar turma' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Ações da turma' })).toBeFocused();
 
-  await page.getByRole('button', { name: 'Apagar turma' }).click();
+  await page.getByRole('button', { name: 'Ações da turma' }).click();
+  await page.getByRole('dialog', { name: '3º A' }).getByRole('button', { name: 'Apagar turma' }).click();
   await dialogo.getByRole('button', { name: 'Cancelar' }).click();
   await expect(dialogo).toHaveCount(0);
   await expect(page.getByRole('heading', { name: '3º A' })).toBeVisible();
@@ -30,7 +32,8 @@ test('se a contagem de arquivos falhar, o usuário ainda consegue cancelar', asy
   await page.goto(`/turmas/${s.turmaId}`);
 
   await page.route('**/rest/v1/arquivos*', (r) => r.fulfill({ status: 500, body: '{"message":"falha"}' }));
-  await page.getByRole('button', { name: 'Apagar turma' }).click();
+  await page.getByRole('button', { name: 'Ações da turma' }).click();
+  await page.getByRole('dialog', { name: '3º A' }).getByRole('button', { name: 'Apagar turma' }).click();
   const dialogo = page.getByRole('dialog', { name: 'Apagar a turma 3º A?' });
   await expect(dialogo).toContainText('Não consegui contar os arquivos.');
   await expect(dialogo.getByRole('button', { name: 'Apagar', exact: true })).toBeDisabled();

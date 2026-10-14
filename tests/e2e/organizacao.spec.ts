@@ -29,15 +29,22 @@ test('cria ano, turma colorida, alunos colados e atividade; busca sem acento', a
   await entrar(page);
   await criarAnoETurma(page, '3º A', 'Verde');
 
-  await page.getByLabel('Cole um nome por linha').fill('Maria Souza\n\n  João Pedro \nmaria souza\nAna');
   await page.getByRole('button', { name: 'Adicionar alunos' }).click();
-  await expect(page.getByRole('status').filter({ hasText: 'adicionados' })).toHaveText('3 adicionados, 1 ignorado');
+  const adicionar = page.getByRole('dialog', { name: 'Adicionar alunos' });
+  await adicionar.getByLabel('Cole um nome por linha').fill('Maria Souza\n\n  João Pedro \nmaria souza\nAna');
+  await adicionar.getByRole('button', { name: 'Adicionar', exact: true }).click();
+  await expect(adicionar.getByRole('status')).toHaveText('3 adicionados, 1 ignorado');
+  await page.keyboard.press('Escape');
   await expect(page.getByRole('link', { name: /João Pedro/ })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Atividades' }).click();
-  await page.getByLabel('Nome da atividade').fill('Prova 1');
-  await page.getByRole('button', { name: 'Criar atividade' }).click();
+  await page.getByRole('button', { name: 'Nova atividade' }).click();
+  const nova = page.getByRole('dialog', { name: 'Nova atividade' });
+  await nova.getByLabel('Nome da atividade').fill('Prova 1');
+  await nova.getByRole('button', { name: 'Criar atividade' }).click();
   await expect(page.getByText('0/3 entregues')).toBeVisible();
+  await page.getByRole('button', { name: /^Prova 1/ }).click();
+  await expect(page.getByRole('link', { name: 'Escanear esta atividade' })).toBeVisible();
 
   await abas(page).getByRole('link', { name: 'Buscar' }).click();
   await page.getByLabel('Buscar aluno').fill('joao');
@@ -48,10 +55,21 @@ test('apagar turma pede confirmação com a contagem de arquivos', async ({ page
   await entrar(page);
   await criarAnoETurma(page, '3º B', 'Roxo');
 
-  await page.getByRole('button', { name: 'Apagar turma' }).click();
+  await page.getByRole('button', { name: 'Ações da turma' }).click();
+  await page.getByRole('dialog', { name: '3º B' }).getByRole('button', { name: 'Apagar turma' }).click();
   const dialogo = page.getByRole('dialog');
   await expect(dialogo).toContainText('Isso vai apagar 0 arquivo(s).');
   await dialogo.getByRole('button', { name: 'Apagar' }).click();
   await expect(page.getByRole('heading', { name: '2026' })).toBeVisible();
   await expect(page.getByRole('link', { name: '3º B' })).toHaveCount(0);
+});
+
+test('mudar a cor da turma pelo ⋯ muda o cartão no Início', async ({ page }) => {
+  await entrar(page);
+  await criarAnoETurma(page, '3º C', 'Azul');
+  await page.getByRole('button', { name: 'Ações da turma' }).click();
+  await page.getByRole('dialog', { name: '3º C' }).getByRole('button', { name: 'Mudar cor' }).click();
+  await page.getByRole('dialog', { name: 'Cor da turma' }).getByRole('radio', { name: 'Laranja' }).click();
+  await abas(page).getByRole('link', { name: 'Início' }).click();
+  await expect(page.getByRole('link', { name: /3º C/ })).toHaveAttribute('data-cor', 'laranja');
 });
